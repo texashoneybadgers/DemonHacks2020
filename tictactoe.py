@@ -12,9 +12,25 @@ SCREEN_HEIGHT = 600
 
 
 # Images -- image directory -> add more avatars
-player1 = pygame.image.load("images/LOK_Korra.jpg")
-player2 = pygame.image.load("images/LOK_Asami.jpg")
+korra = pygame.image.load("images/LOK_Korra.jpg")
+asami = pygame.image.load("images/LOK_Asami.jpg")
+bolin = pygame.image.load("images/LOK_Bolin.jpg")
+jinora = pygame.image.load("images/LOK_Jinora.jpg")
+kuvira = pygame.image.load("images/LOK_Kuvira.jpg")
+lin_beifong = pygame.image.load("images/LOK_Lin_Beifong.jpg")
+mako = pygame.image.load("images/LOK_Mako.jpg")
+opal = pygame.image.load("images/LOK_Opal.jpg")
+tenzin = pygame.image.load("images/LOK_Tenzin.jpg")
+zaheer = pygame.image.load("images/LOK_Zaheer.png")
+amon = pygame.image.load("images/LOK_Amon.png")
+unalaq = pygame.image.load("images/LOK_Unalaq.png")
 background = pygame.image.load("images/startMenu.jpg")
+
+# defaults
+player1 = korra
+player2 = asami
+player1Name = "Korra"
+player2Name = "Asami"
 
 # Provide the screen to the user
 screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
@@ -29,6 +45,7 @@ gameboard = [[None, None, None],
 # 1 = Player 2
 # 2 = Scratch
 winner = 3
+
 
 def text_objects(text, font):
     textSurface = font.render(text, True, (0,0,0))
@@ -58,7 +75,6 @@ def handleClick(player):
         elif player and gameboard[0][1] is None:
             gameboard[0][1] = "O"
             # drawO(position)
-
 
     # Box 3 (top right)
     elif (SCREEN_WIDTH * (2/3) < x_pos and y_pos < SCREEN_WIDTH / 3):
@@ -122,8 +138,6 @@ def handleClick(player):
         elif player and gameboard[2][2] is None:
             gameboard[2][2] = "O"
             # drawO(position)
-
-    print(gameboard)
 
 def checkVictory():
     global winner
@@ -212,15 +226,167 @@ def startMenu():
         TextRect.center = (300, 100)
         screen.blit(TextSurf, TextRect)
 
-        pygame.draw.rect(screen, (0, 200, 0), (250, 500, 100, 50))
+        pygame.draw.rect(screen, (0, 200, 0), (200, 500, 200, 50))
 
         smallText = pygame.font.Font("freesansbold.ttf", 20)
-        textSurf, textRect = text_objects("Start", smallText)
+        textSurf, textRect = text_objects("Choose character", smallText)
         textRect.center = (300, 525)
         screen.blit(textSurf, textRect)
         pygame.display.update()
 
     screen.fill((255, 255, 255))
+
+    avatarMenu()
+
+def avatarMenu():
+    global player1
+    global player2
+    global player1Name
+    global player2Name
+    running = True
+    p1Chosen = False
+    screen.fill((255, 255, 255))
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                position = pygame.mouse.get_pos()
+                x_pos = position[0]
+                y_pos = position[1]
+
+                # Choose Korra
+                if 0 < x_pos < 150 and 50 < y_pos < 200 and p1Chosen == False:
+                    player1 = korra
+                    player1Name = "Korra"
+                    p1Chosen = True
+                elif 0 < x_pos < 150 and 50 < y_pos < 200 and p1Chosen == True:
+                    player2 = korra
+                    player2Name = "Korra"
+                    running = False
+                # Choose Asami
+                elif 150 < x_pos < 300 and 50 < y_pos < 200 and p1Chosen == False:
+                    player1 = asami
+                    player1Name = "Asami"
+                    p1Chosen = True
+                elif 150 < x_pos < 300 and 50 < y_pos < 200 and p1Chosen == True:
+                    player2 = asami
+                    player2Name = "Asami"
+                    running = False
+                # Choose Bolin
+                elif 300 < x_pos < 450 and 50 < y_pos < 200 and p1Chosen == False:
+                    player1 = bolin
+                    player1Name = "Bolin"
+                    p1Chosen = True
+                elif 300 < x_pos < 450 and 50 < y_pos < 200 and p1Chosen == True:
+                    player2 = bolin
+                    player2Name = "Bolin"
+                    running = False
+                # Choose Jinora
+                elif 450 < x_pos < 600 and 50 < y_pos < 200 and p1Chosen == False:
+                    player1 = jinora
+                    player1Name = "Jinora"
+                    p1Chosen = True
+                elif 450 < x_pos < 600 and 50 < y_pos < 200 and p1Chosen == True:
+                    player2 = jinora
+                    player2Name = "Jinora"
+                    running = False
+                # Choose Kuvira
+                elif 0 < x_pos < 150 and 200 < y_pos < 350 and p1Chosen == False:
+                    player1 = kuvira
+                    player1Name = "Kuvira"
+                    p1Chosen = True
+                elif 0 < x_pos < 150 and 200 < y_pos < 350 and p1Chosen == True:
+                    player2 = kuvira
+                    player2Name = "Kuvira"
+                    running = False
+                # Choose Lin Beifong
+                elif 150 < x_pos < 300 and 200 < y_pos < 350 and p1Chosen == False:
+                    player1 = lin_beifong
+                    player1Name = "Lin"
+                    p1Chosen = True
+                elif 150 < x_pos < 300 and 200 < y_pos < 350 and p1Chosen == True:
+                    player2 = lin_beifong
+                    player2Name = "Lin"
+                    running = False
+                # Choose Mako
+                elif 300 < x_pos < 450 and 200 < y_pos < 350 and p1Chosen == False:
+                    player1 = mako
+                    player1Name = "Mako"
+                    p1Chosen = True
+                elif 300 < x_pos < 450 and 200 < y_pos < 350 and p1Chosen == True:
+                    player2 = mako
+                    player2Name = "Mako"
+                    running = False
+                # Choose Opal
+                elif 450 < x_pos < 600 and 200 < y_pos < 350 and p1Chosen == False:
+                    player1 = opal
+                    player1Name = "Opal"
+                    p1Chosen = True
+                elif 450 < x_pos < 600 and 200 < y_pos < 350 and p1Chosen == True:
+                    player2 = opal
+                    player2Name = "Opal"
+                    running = False
+                # Choose Tenzin
+                elif 0 < x_pos < 150 and 350 < y_pos < 500 and p1Chosen == False:
+                    player1 = tenzin
+                    player1Name = "Tenzin"
+                    p1Chosen = True
+                elif 0 < x_pos < 150 and 350 < y_pos < 500 and p1Chosen == True:
+                    player2 = tenzin
+                    player2Name = "Tenzin"
+                    running = False
+                # Choose Unalaq
+                elif 150 < x_pos < 300 and 350 < y_pos < 500 and p1Chosen == False:
+                    player1 = unalaq
+                    player1Name = "Unalaq"
+                    p1Chosen = True
+                elif 150 < x_pos < 300 and 350 < y_pos < 500 and p1Chosen == True:
+                    player2 = unalaq
+                    player2Name = "Unalaq"
+                    running = False
+                # Choose Zaheer
+                elif 300 < x_pos < 450 and 350 < y_pos < 500 and p1Chosen == False:
+                    player1 = zaheer
+                    player1Name = "Zaheer"
+                    p1Chosen = True
+                elif 300 < x_pos < 450 and 350 < y_pos < 500 and p1Chosen == True:
+                    player2 = zaheer
+                    player2Name = "Zaheer"
+                    running = False
+                # Choose Amon
+                elif 450 < x_pos < 600 and 350 < y_pos < 500 and p1Chosen == False:
+                    player1 = amon
+                    player1Name = "Amon"
+                    p1Chosen = True
+                elif 450 < x_pos < 600 and 350 < y_pos < 500 and p1Chosen == True:
+                    player2 = amon
+                    player2Name = "Amon"
+                    running = False
+
+        # upper text
+        screen.fill((255, 255, 255))
+        largeText = pygame.font.Font('freesansbold.ttf', 20)
+        TextSurf, TextRect = text_objects("Choose your characters", largeText)
+        TextRect.center = (300, 25)
+        screen.blit(TextSurf, TextRect)
+
+        # characters - 4 to each row
+        screen.blit(korra, (0, 50))
+        screen.blit(asami, (150, 50))
+        screen.blit(bolin, (300, 50))
+        screen.blit(jinora, (450, 50))
+        screen.blit(kuvira, (0, 200)) # next row
+        screen.blit(lin_beifong, (150, 200))
+        screen.blit(mako, (300, 200))
+        screen.blit(opal, (450, 200)) # next row
+        screen.blit(tenzin, (0, 350))
+        screen.blit(unalaq, (150, 350))
+        screen.blit(zaheer, (300, 350))
+        screen.blit(amon, (450, 350))
+        pygame.display.update()
+
     playGame()
 
 def gameOver(winner):
@@ -239,16 +405,15 @@ def gameOver(winner):
     textRect.center = (200, 375)
     screen.blit(textSurf, textRect)
     pygame.display.update()
-    print(winner)
     if winner == 0:
         smallText = pygame.font.Font("freesansbold.ttf", 50)
-        textSurf, textRect = text_objects("Player 1 Won!", smallText)
+        textSurf, textRect = text_objects(player1Name + " Won!", smallText)
         textRect.center = (300, 250)
         screen.blit(textSurf, textRect)
         pygame.display.update()
     elif winner == 1:
         smallText = pygame.font.Font("freesansbold.ttf", 50)
-        textSurf, textRect = text_objects("Player 2 Won!", smallText)
+        textSurf, textRect = text_objects(player2Name + " Won!", smallText)
         textRect.center = (300, 250)
         screen.blit(textSurf, textRect)
         pygame.display.update()
@@ -275,7 +440,7 @@ def gameOver(winner):
                 elif 130 < x_pos < 280 and 350 < y_pos < 400:
                     screen.fill((255, 255, 255))
                     clear()
-                    playGame()
+                    avatarMenu()
 
 # Run pygame until user quits
 def playGame():
@@ -287,6 +452,7 @@ def playGame():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                quit()
             # Check if user pressed the mouse down -- next deal with spawning "X" or "O"
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Get the mouse (x, y) pos and check if they are valid aka its a click within the square
@@ -301,11 +467,6 @@ def playGame():
         # Fill the background with white
         # (R, G, B)
         screen.fill((255, 255, 255))
-
-        # LATER Make cool start screen
-        # LATER player chooses
-        # LATER play again?
-        # LATER music?
 
         # Create a 3x3 grid aka the game board
         # Horizontal lines
