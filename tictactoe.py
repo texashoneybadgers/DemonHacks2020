@@ -11,8 +11,9 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 
 # Images -- image directory -> add more avatars
-player1 = pygame.image.load("images/player1.png")
-player2 = pygame.image.load("images/player2.png")
+player1 = pygame.image.load("images/LOK_Korra.jpg")
+player2 = pygame.image.load("images/LOK_Asami.jpg")
+background = pygame.image.load("images/startMenu.jpg")
 
 # Provide the screen to the user
 screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
@@ -21,6 +22,10 @@ screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 gameboard = [[None, None, None],
              [None, None, None],
              [None, None, None]]
+
+def text_objects(text, font):
+    textSurface = font.render(text, True, (0,0,0))
+    return textSurface, textSurface.get_rect()
 
 # player == 0 if player 1 ("X")
 # player == 1 if player 2 ("0")
@@ -33,11 +38,9 @@ def handleClick(player):
     if (x_pos < SCREEN_WIDTH / 3 and y_pos < SCREEN_WIDTH / 3):
         if not player and gameboard[0][0] is None:
             gameboard[0][0] = "X"
-            #print("draw x")
             # drawX(position)
         elif player and gameboard[0][0] is None:
             gameboard[0][0] = "O"
-            #print("draw o")
             # drawO(position)
 
     # Box 2 (middle top)
@@ -48,6 +51,7 @@ def handleClick(player):
         elif player and gameboard[0][1] is None:
             gameboard[0][1] = "O"
             # drawO(position)
+
 
     # Box 3 (top right)
     elif (SCREEN_WIDTH * (2/3) < x_pos and y_pos < SCREEN_WIDTH / 3):
@@ -119,7 +123,7 @@ def checkVictory():
     for row in range(3):
         if gameboard[row][0] == gameboard[row][1] and gameboard[row][1] == gameboard[row][2] and gameboard[row][0] != None:
             print('victory in row')
-            print(str(gameboard[row][0]) + ' wins the game')
+            print(str(gameboard[row][0]) + " wins the game")
             return True
     
     # Check for column victory
@@ -139,6 +143,16 @@ def checkVictory():
         print(str(gameboard[0][2]) + ' wins the game')
         return True
     
+    scratch = True
+    for row in gameboard:
+        for element in row:
+            if element is  None:
+                scratch = False
+
+    if scratch:
+        print('scratch detected')
+        return True
+
     return False
     
 def clear():
@@ -147,48 +161,90 @@ def clear():
                  [None, None, None],
                  [None, None, None]]
 
-def playerDisplay():
-    screen.blit(player1, (100,0))
-    screen.blit(player2, (300, 0))
-    
-        
-# Run pygame until user quits
-running = True
-currentPlayer = False  # starts with player 1 (X)
-while running:
+# player == 0 if player 1 ("X")
+# player == 1 if player 2 ("0")
+def drawPlayers():
+    for row in range(3):
+        for col in range(3):
+            if gameboard[col][row] == "X":
+                screen.blit(player1, (row * 200 + 25, col * 200 + 25))
+            if gameboard[col][row] == "O":
+                screen.blit(player2, (row * 200 + 25, col * 200 + 25))
+                
+def startMenu():
+    intro = True
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                position = pygame.mouse.get_pos();
+                x_pos = position[0]
+                y_pos = position[1]
+                
+                if 250 < x_pos < 350 and 500 < y_pos < 550:
+                    intro = False
+                
+        screen.blit(background, (0, 0))
+        largeText = pygame.font.Font('freesansbold.ttf', 30)
+        TextSurf, TextRect = text_objects("Tic Tac Toe, LOK Style", largeText)
+        TextRect.center = (300, 100)
+        screen.blit(TextSurf, TextRect)
 
-    # Did the user click the window close button?
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        # Check if user pressed the mouse down -- next deal with spawning "X" or "O"
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            # Get the mouse (x, y) pos and check if they are valid aka its a click within the square
-            # Also need to check if that square is filled already
-            handleClick(currentPlayer)
-            currentPlayer = not currentPlayer
-    
-    # Check for victory
-    if (checkVictory()):
-        clear()
+        pygame.draw.rect(screen, (0, 200, 0), (250, 500, 100, 50))
 
-    # Fill the background with white
-    # (R, G, B)
+        smallText = pygame.font.Font("freesansbold.ttf", 20)
+        textSurf, textRect = text_objects("Start", smallText)
+        textRect.center = (300, 525)
+        screen.blit(textSurf, textRect)
+        pygame.display.update()
+
     screen.fill((255, 255, 255))
-    playerDisplay()
+    playGame()
 
-    # LATER Make cool start screen
-    # LATER player chooses
-    # LATER play again?
-    # LATER music?
+#def charactarMenu():
 
-    # Create a 3x3 grid aka the game board
-    # Horizontal lines
-    pygame.draw.line(screen, (0, 0, 0), (0, SCREEN_WIDTH / 3), (SCREEN_WIDTH, SCREEN_WIDTH / 3), 10)
-    pygame.draw.line(screen, (0, 0, 0), (0, SCREEN_WIDTH * (2 / 3)), (SCREEN_WIDTH, SCREEN_WIDTH * (2 / 3)), 10)
-    # Vertical lines
-    pygame.draw.line(screen, (0, 0, 0), (SCREEN_WIDTH / 3, 0), (SCREEN_WIDTH / 3, SCREEN_WIDTH), 10)
-    pygame.draw.line(screen, (0, 0, 0), (SCREEN_WIDTH * (2 / 3), 0), (SCREEN_WIDTH * (2 / 3), SCREEN_WIDTH), 10)
-    
-    # Flip the display
-    pygame.display.update()
+# Run pygame until user quits
+def playGame():
+    running = True
+    currentPlayer = False  # starts with player 1 (X)
+    while running:
+
+        # Did the user click the window close button?
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            # Check if user pressed the mouse down -- next deal with spawning "X" or "O"
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Get the mouse (x, y) pos and check if they are valid aka its a click within the square
+                # Also need to check if that square is filled already
+                handleClick(currentPlayer)
+                currentPlayer = not currentPlayer
+
+        # Check for victory
+        if (checkVictory()):
+            clear()
+
+        # Fill the background with white
+        # (R, G, B)
+        screen.fill((255, 255, 255))
+
+        # LATER Make cool start screen
+        # LATER player chooses
+        # LATER play again?
+        # LATER music?
+
+        # Create a 3x3 grid aka the game board
+        # Horizontal lines
+        pygame.draw.line(screen, (0, 0, 0), (0, SCREEN_WIDTH / 3), (SCREEN_WIDTH, SCREEN_WIDTH / 3), 10)
+        pygame.draw.line(screen, (0, 0, 0), (0, SCREEN_WIDTH * (2 / 3)), (SCREEN_WIDTH, SCREEN_WIDTH * (2 / 3)), 10)
+        # Vertical lines
+        pygame.draw.line(screen, (0, 0, 0), (SCREEN_WIDTH / 3, 0), (SCREEN_WIDTH / 3, SCREEN_WIDTH), 10)
+        pygame.draw.line(screen, (0, 0, 0), (SCREEN_WIDTH * (2 / 3), 0), (SCREEN_WIDTH * (2 / 3), SCREEN_WIDTH), 10)
+
+        drawPlayers()
+        # Flip the display
+        pygame.display.update()
+
+startMenu()
