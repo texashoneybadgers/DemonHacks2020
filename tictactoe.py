@@ -10,6 +10,7 @@ pygame.display.set_caption('Tic Tac Toe')
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 
+
 # Images -- image directory -> add more avatars
 player1 = pygame.image.load("images/LOK_Korra.jpg")
 player2 = pygame.image.load("images/LOK_Asami.jpg")
@@ -22,6 +23,12 @@ screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 gameboard = [[None, None, None],
              [None, None, None],
              [None, None, None]]
+
+# Winner
+# 0 = Player 1
+# 1 = Player 2
+# 2 = Scratch
+winner = 3
 
 def text_objects(text, font):
     textSurface = font.render(text, True, (0,0,0))
@@ -119,28 +126,41 @@ def handleClick(player):
     print(gameboard)
 
 def checkVictory():
+    global winner
     # Check for row victory
     for row in range(3):
         if gameboard[row][0] == gameboard[row][1] and gameboard[row][1] == gameboard[row][2] and gameboard[row][0] != None:
-            print('victory in row')
-            print(str(gameboard[row][0]) + " wins the game")
+            if gameboard[row][0] == "X":
+                winner = 0
+            elif gameboard[row][0] == "O":
+                winner = 1
+
             return True
     
     # Check for column victory
     for col in range(3):
         if gameboard[0][col] == gameboard[1][col] and gameboard[1][col] == gameboard[2][col] and gameboard[0][col] != None:
-            print('victory in col')
-            print(str(gameboard[0][row]) + ' wins the game')
+            if gameboard[0][col] == "X":
+                winner = 0
+            elif gameboard[0][col] == "O":
+                winner = 1
+
             return True
 
     # Check for diagonal victory
     if gameboard[0][0] == gameboard[1][1] and gameboard[1][1] == gameboard[2][2] and gameboard[0][0] != None:
-        print('victory in diagonal')
-        print(str(gameboard[0][0]) + ' wins the game')
+        if gameboard[1][1] == "X":
+            winner = 0
+        elif gameboard[1][1] == "O":
+            winner = 1
+
         return True
     elif gameboard[0][2] == gameboard[1][1] and gameboard[1][1] == gameboard[2][0] and gameboard[0][2] != None:
-        print('victory in diagonal')
-        print(str(gameboard[0][2]) + ' wins the game')
+        if gameboard[1][1] == "X":
+            winner = 0
+        elif gameboard[1][1] == "O":
+            winner = 1
+
         return True
     
     scratch = True
@@ -150,7 +170,7 @@ def checkVictory():
                 scratch = False
 
     if scratch:
-        print('scratch detected')
+        winner = 2
         return True
 
     return False
@@ -203,7 +223,59 @@ def startMenu():
     screen.fill((255, 255, 255))
     playGame()
 
-#def charactarMenu():
+def gameOver(winner):
+    global screen
+    pygame.draw.rect(screen, (255, 255, 255), (100, 150, 400, 300))
+    pygame.draw.rect(screen, (0, 200, 0), (130, 350, 150, 50))
+    pygame.draw.rect(screen, (200, 0, 0), (315, 350, 150, 50))
+
+    smallText = pygame.font.Font("freesansbold.ttf", 20)
+    textSurf, textRect = text_objects("Quit", smallText)
+    textRect.center = (385, 375)
+    screen.blit(textSurf, textRect)
+
+    smallText = pygame.font.Font("freesansbold.ttf", 20)
+    textSurf, textRect = text_objects("Play again", smallText)
+    textRect.center = (200, 375)
+    screen.blit(textSurf, textRect)
+    pygame.display.update()
+    print(winner)
+    if winner == 0:
+        smallText = pygame.font.Font("freesansbold.ttf", 50)
+        textSurf, textRect = text_objects("Player 1 Won!", smallText)
+        textRect.center = (300, 250)
+        screen.blit(textSurf, textRect)
+        pygame.display.update()
+    elif winner == 1:
+        smallText = pygame.font.Font("freesansbold.ttf", 50)
+        textSurf, textRect = text_objects("Player 2 Won!", smallText)
+        textRect.center = (300, 250)
+        screen.blit(textSurf, textRect)
+        pygame.display.update()
+    elif winner == 2:
+        smallText = pygame.font.Font("freesansbold.ttf", 50)
+        textSurf, textRect = text_objects("Nobody Won!", smallText)
+        textRect.center = (300, 250)
+        screen.blit(textSurf, textRect)
+        pygame.display.update()
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                position = pygame.mouse.get_pos();
+                x_pos = position[0]
+                y_pos = position[1]
+                
+                if 315 < x_pos < 465 and 350 < y_pos < 400:
+                    running = False
+                elif 130 < x_pos < 280 and 350 < y_pos < 400:
+                    screen.fill((255, 255, 255))
+                    clear()
+                    playGame()
 
 # Run pygame until user quits
 def playGame():
@@ -224,7 +296,7 @@ def playGame():
 
         # Check for victory
         if (checkVictory()):
-            clear()
+            running = False
 
         # Fill the background with white
         # (R, G, B)
@@ -246,5 +318,8 @@ def playGame():
         drawPlayers()
         # Flip the display
         pygame.display.update()
+
+    gameOver(winner)
+    quit()
 
 startMenu()
